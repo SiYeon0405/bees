@@ -6,10 +6,8 @@ services:
     container_name: django-mysql-db
     restart: always
     environment:
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: bees_db
+      MYSQL_ROOT_PASSWORD: 1234
     ports:
       - "3307:3306"
     volumes:
@@ -25,5 +23,3 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    env_file:
-      - .env
