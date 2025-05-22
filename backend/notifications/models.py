@@ -1,11 +1,11 @@
 from django.db import models
-from users.models import User
-from groups.models import Group
+from django.contrib.auth.models import User
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, blank=True)
-    message = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'{self.user.username}: {self.message[:20]}...'

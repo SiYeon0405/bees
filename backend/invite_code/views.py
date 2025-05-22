@@ -5,6 +5,7 @@ from rest_framework import status
 from group_create.models import Group
 from group_join.models import GroupMembership
 from django.contrib.auth import get_user_model
+from notifications.models import Notification
 
 import random
 import string
@@ -29,6 +30,10 @@ class InviteJoinView(APIView):
             return Response({"message": "이미 가입한 그룹입니다."}, status=200)
 
         GroupMembership.objects.create(user=user, group=group)
+        Notification.objects.create(
+            user=group.creator,  # 알림 받을 대상
+            message=f"{user.username}님이 '{group.name}' 그룹에 참가했습니다."
+)
         return Response({"message": "그룹에 참가했습니다."}, status=201)
 
 
@@ -41,12 +46,10 @@ class InviteCreateView(APIView):
     → 그룹에 8자리 랜덤 초대코드를 생성·저장하고 반환
     """
     def post(self, request):
-        group_id = request.data.get("group_id")
+        group_id = request.data.get("group_id")  # 🔧 이 줄이 꼭 필요함
+
         if not group_id:
-            return Response(
-                {"error": "group_id is required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "group_id is required"}, status=400)
 
         try:
             group = Group.objects.get(id=group_id)
