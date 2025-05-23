@@ -102,3 +102,4 @@ venv.bak/
 # Docker
 *.pid
 *.sock
+db/
