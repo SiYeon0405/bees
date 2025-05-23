@@ -58,7 +58,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',  # ✅ 누락되어 있던 부분
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-# ✅ MySQL 연동
+# ✅ MySQL 연동 (Docker 컨테이너 간 연결)
 pymysql.install_as_MySQLdb()
 
 DATABASES = {
@@ -76,8 +76,8 @@ DATABASES = {
         'NAME': 'bees_db',
         'USER': 'root',
         'PASSWORD': '1234',
-        'HOST': 'db',
-        'PORT': '3306',
+        'HOST': 'db',  # ✅ Docker용: MySQL 컨테이너 이름
+        'PORT': '3306',  # ✅ docker-compose에 설정한 포트 (보통 3306)
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
@@ -96,7 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
-USE_TZ = False  # 한국 시간 기준으로 하려면 False가 더 적절해
+USE_TZ = False
 
 # 정적 파일
 STATIC_URL = 'static/'
@@ -110,13 +110,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',  # 기본 인증 요구
+        'rest_framework.permissions.IsAuthenticated',
     ),
-}
-
-# ✅ JWT 설정
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
 }
