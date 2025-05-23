@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+*.db
+*.env
+
+# Django
+db.sqlite3
+/media/
+/staticfiles/
+/uploads/
+/migrations/
+
+# 가상환경
+venv/
+.env/
+*.env
+
+# VSCode
+.vscode/
+
+# Docker
+*.pid
+*.sock
+db/
