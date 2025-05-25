@@ -12,6 +12,11 @@ services:
       - "3307:3306"
     volumes:
       - ./db:/var/lib/mysql
+    healthcheck:  # ✅ 추가: db 준비 완료 확인용
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   web:
     build: .
@@ -22,4 +27,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy  # ✅ 수정: db가 healthy 상태일 때 실행
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306

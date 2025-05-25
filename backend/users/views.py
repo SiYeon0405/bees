@@ -14,7 +14,6 @@ from .serializers import (
     PasswordChangeSerializer
 )
 
-
 # ✅ 회원가입 뷰
 class SignupView(APIView):
     renderer_classes = [JSONRenderer]
@@ -55,6 +54,13 @@ class MyPageView(APIView):
         return Response(serializer.data)
 
     def put(self, request):
+        serializer = UserUpdateSerializer(request.user, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': '정보가 수정되었습니다.'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request):  # ✅ PATCH 메서드 추가
         serializer = UserUpdateSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

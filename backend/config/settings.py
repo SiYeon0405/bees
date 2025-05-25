@@ -1,8 +1,9 @@
 from pathlib import Path
 from datetime import timedelta
 import pymysql
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# 프로젝트 루트 경로
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 보안
@@ -12,7 +13,7 @@ ALLOWED_HOSTS = []
 
 # 앱 등록
 INSTALLED_APPS = [
-    # 기본 앱
+    # Django 기본 앱
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,7 +51,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# 템플릿 설정
+# 템플릿
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -67,24 +68,25 @@ TEMPLATES = [
     },
 ]
 
-# ✅ MySQL 연동 (Docker 컨테이너 간 연결)
+# pymysql을 MySQLdb처럼 사용
 pymysql.install_as_MySQLdb()
 
+# 데이터베이스 설정
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bees_db',
         'USER': 'root',
         'PASSWORD': '1234',
-        'HOST': 'db',  # ✅ Docker용: MySQL 컨테이너 이름
-        'PORT': '3306',  # ✅ docker-compose에 설정한 포트 (보통 3306)
+        'HOST': os.getenv('MYSQL_HOST', '127.0.0.1'),
+        'PORT': os.getenv('MYSQL_PORT', '3307'),
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
-# 비밀번호 정책
+# 비밀번호 검증
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -92,7 +94,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ✅ 로컬라이징
+# 언어 및 시간
 LANGUAGE_CODE = 'ko-kr'
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
@@ -101,10 +103,10 @@ USE_TZ = False
 # 정적 파일
 STATIC_URL = 'static/'
 
-# 기본 필드 설정
+# 기본 필드 타입
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ Django REST Framework 설정
+# REST Framework 설정
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -112,4 +114,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+}
+
+# JWT 토큰 만료 시간 (선택사항)
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }

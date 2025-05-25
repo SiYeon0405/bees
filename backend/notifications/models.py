@@ -1,11 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings  # 커스텀 유저 모델 참조용
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # ✅ 커스텀 유저 모델 안전하게 참조
+        on_delete=models.CASCADE,
+        related_name='notifications'
+    )
     message = models.TextField()
     is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # 생성 시간 자동 저장
 
     def __str__(self):
-        return f'{self.user.username}: {self.message[:20]}...'
+        return f'{self.user.email}: {self.message[:20]}...'

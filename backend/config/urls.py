@@ -9,10 +9,10 @@ urlpatterns = [
     # ✅ Django 관리자 페이지
     path('admin/', admin.site.urls),
 
-    # ✅ JWT 로그인 / 리프레시 토큰 발급
+    # ✅ JWT 로그인 및 토큰 갱신
     path('api/auth/login/', EmailTokenObtainPairView.as_view(), name='jwt_login'),
-    path('api/auth/refresh/', TokenRefreshView.as_view(), name='jwt_token_refresh'),
+    path('api/auth/refresh/', TokenRefreshView.as_view(), name='jwt_token_refresh'),  # 🔄 정식 경로로 수정
 
-    # ✅ 사용자 관련 API 엔드포인트
+    # ✅ 사용자 관련 API (회원가입, 마이페이지, 비밀번호 변경, 탈퇴 등)
     path('api/users/', include('users.urls')),
 ]
