@@ -47,9 +47,15 @@ GitHub의 단점 보완 + Discord의 실시간 피드백 장점을 융합한
 
 ---
 
-## 🐳 실행 방법 (로컬 개발 환경)
+## ⚙️ 데이터베이스 초기화 방법
 
-1. 프로젝트 클론  
+이 프로젝트는 `MySQL` 데이터베이스를 Docker 컨테이너로 운영하며, `bees_dump.sql` 덤프 파일을 통해 초기 데이터를 설정할 수 있습니다. 아래 단계에 따라 데이터베이스를 복원해주세요.
+
+### 1️⃣ 사전 준비
+
+먼저 레포지토리를 클론하고 `backend` 디렉토리로 이동합니다.
+
 ```bash
 git clone https://github.com/SiYeon0405/bees.git
-cd bees
+cd bees/backend
+
