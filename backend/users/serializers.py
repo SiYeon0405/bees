@@ -57,3 +57,35 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class PasswordChangeSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+# 25.06.04 추가 -홍
+class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = User.EMAIL_FIELD  # 일반적으로 'email'
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        if email and password:
+            user = authenticate(
+                request=self.context.get('request'),
+                username=email,
+                password=password
+            )
+            if not user:
+                raise serializers.ValidationError('이메일 또는 비밀번호가 올바르지 않습니다.', code='authorization')
+        else:
+            raise serializers.ValidationError('이메일과 비밀번호를 모두 입력해주세요.', code='authorization')
+
+        refresh = self.get_token(user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+            }
+        }
