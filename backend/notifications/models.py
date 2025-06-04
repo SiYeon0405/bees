@@ -3,9 +3,8 @@ from django.conf import settings  # 커스텀 유저 모델 참조용
 
 class Notification(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,  # ✅ 커스텀 유저 모델 안전하게 참조
-        on_delete=models.CASCADE,
-        related_name='notifications'
+        settings.AUTH_USER_MODEL,  # 커스텀 유저 모델 참조
+        on_delete=models.CASCADE
     )
     message = models.TextField()
     is_read = models.BooleanField(default=False)
